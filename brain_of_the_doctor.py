@@ -346,6 +346,15 @@ def analyze_image_with_query(query, encoded_image, language="English", model="ll
     # Get the appropriate prompt for the selected language
     system_prompt = language_prompts.get(language, language_prompts["English"])
     
+    # Add explicit language instruction to the system prompt
+    language_instructions = {
+        "English": "Respond in English only.",
+        "Hindi": "केवल हिंदी में उत्तर दें।",
+        "Marathi": "केवळ मराठीत उत्तर द्या।"
+    }
+    
+    system_prompt = f"{system_prompt} {language_instructions.get(language, 'Respond in English only.')}"
+    
     # Create a comprehensive query that includes image context
     enhanced_query = f"""Patient has uploaded an image of their skin condition and reports: {query}
     
@@ -460,6 +469,15 @@ def analyze_text_query(query, language="English", model="llama3-8b-8192", max_re
     prompts = language_prompts.get(language, language_prompts["English"])
     system_prompt = random.choice(prompts) if isinstance(prompts, list) else prompts
     
+    # Add explicit language instruction to the system prompt
+    language_instructions = {
+        "English": "Respond in English only.",
+        "Hindi": "केवल हिंदी में उत्तर दें।",
+        "Marathi": "केवळ मराठीत उत्तर द्या।"
+    }
+    
+    system_prompt_with_language = f"{system_prompt} {language_instructions.get(language, 'Respond in English only.')}"
+    
     # Add some variability to the query to get different responses
     query_variations = [
         query,
@@ -471,7 +489,7 @@ def analyze_text_query(query, language="English", model="llama3-8b-8192", max_re
     user_query = random.choice(query_variations)
     
     messages = [
-        {"role": "system", "content": system_prompt},
+        {"role": "system", "content": system_prompt_with_language},
         {"role": "user", "content": user_query}
     ]
 
